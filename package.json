@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "seed": "mysql -u root < schema.sql | node database/helpers.jsx",
+    "sdcSeed": "node database/SDC_seed.js",
     "build": "webpack -d --watch",
     "start": "nodemon server/index.js"
   },
