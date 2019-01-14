@@ -106,12 +106,13 @@ const dataSeeder = () => {
       }
       number += 1;
       console.log(number);
-      if (number === 100) {
+      // Num limit has to be 100 less than seed target. Ex - (400 => 5 million data points)
+      if (number % 100 === 0 && number <= 900) {
         round += 1;
         readable = new stream.Readable();
         dataSeeder();
       }
-      if (mongoCounter === 200) {
+      if (mongoCounter === 1000) {
         console.timeEnd('streamTime');
       }
     });
