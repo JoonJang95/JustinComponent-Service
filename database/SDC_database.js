@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+const Promise = require('bluebird');
+
+Promise.promisifyAll(mongoose);
 
 // connect to mongo via localhost
 mongoose.connect(
   'mongodb://localhost/sdcRelatedSongs',
-  { useNewUrlParser: true, useCreateIndex: true },
+  { useNewUrlParser: true, useCreateIndex: true, autoIndex: false },
 );
 
 // define connection
@@ -51,14 +53,14 @@ const songsSchema = new mongoose.Schema({
   title: String,
   genre: {
     type: String,
-    index: true,
-    required: [true, '_id field is required'],
+    // index: true,
+    // required: [true, '_id field is required'],
   },
   playList: [Number],
   artist: {
     type: String,
-    index: true,
-    required: [true, '_id field is required'],
+    // index: true,
+    // required: [true, '_id field is required'],
   },
   albumID: Number,
   released: Date,

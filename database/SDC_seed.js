@@ -1,11 +1,20 @@
 const faker = require('faker');
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
+// const path = require('path');
 const stream = require('stream');
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
+// const Promise = require('bluebird');
+// const JSONStream = require('JSONStream');
+// const { streamToMongoDB } = require('stream-to-mongo-db');
+let readable = new stream.Readable(); // new empty stream.Readable
 
-const readable = new stream.Readable(); // new empty stream.Readable
-// const { Playlists, Albums, Songs } = require('./SDC_database.js');
+// const outputDBconfig = {
+//   dbURL: 'mongodb://localhost:27017/sdcRelatedSongs',
+//   collection: 'songs',
+//   batchSize: 10000,
+// };
+// const writableStream = streamToMongoDB(outputDBconfig);
+const { Playlists, Albums, Songs } = require('./SDC_database.js');
 
 // Name of Collection and creation of documents (ONLY USE TO TEST MONGOEXPORT)
 
@@ -19,71 +28,115 @@ const audiofile = [
 const genre = ['Hiphop', 'RnB', 'Pop', 'Jazz', 'Classical'];
 const randomNum = () => Math.floor(Math.random() * 5);
 
-// function test() {
-let songs = [];
-console.time('streamTime');
-for (let i = 1; i <= 10000000; i += 1) {
-  songs.push({
-    title: faker.lorem.words(),
-    genre: genre[randomNum()],
-    playList: [randomNum(), randomNum(), randomNum()],
-    artist: 'hey',
-    albumID: 1,
-    released: faker.date.past(),
-    duration: faker.random.number(),
-    image: faker.random.image(),
-    songURL: audiofile[randomNum()],
-    plays: faker.random.number(),
-    likes: faker.random.number(),
-    shares: faker.random.number(),
-    comments: faker.random.number(),
+let song = [];
+let round = 1;
+let number = 0;
+let mongoCounter = 0;
+
+const dataSeeder = () => {
+  console.log('for loop starting');
+  console.log('round', round);
+  for (let i = 1; i <= 1000000; i += 1) {
+    song.push({
+      title: faker.lorem.words(),
+      genre: genre[randomNum()],
+      playList: [randomNum(), randomNum(), randomNum()],
+      artist: 'hey',
+      albumID: 1,
+      released: faker.date.past(),
+      duration: faker.random.number(),
+      image: faker.random.image(),
+      songURL: audiofile[randomNum()],
+      plays: faker.random.number(),
+      likes: faker.random.number(),
+      shares: faker.random.number(),
+      comments: faker.random.number(),
+    });
+
+    if (i % 10000 === 0) {
+      const data = JSON.stringify(song);
+      readable.push(data);
+      // else if (round === 2) {
+      //   readable2.push(data);
+      // }
+
+      // console.log('100 boi');
+
+      // number += 1;
+      song = [];
+    }
+    if (i % 500000 === 0) {
+      console.log('--------------');
+    }
+
+    if (i === 1000000) {
+      console.log('going to push null');
+      readable.push(null);
+
+      // else if (round === 2) {
+      //   readable2.push(null);
+      // }
+    }
+  }
+
+  if (round > 1) {
+    mongoose.connect(
+      'mongodb://localhost/sdcRelatedSongs',
+      { useNewUrlParser: true, useCreateIndex: true, autoIndex: false },
+    );
+
+    const db = mongoose.connection;
+
+    db.once('open', () => {
+      console.log('mongoose is now live!!!');
+    });
+    // if there's a connection error log it
+    db.on('error', console.error.bind(console, 'connection error:'));
+  }
+
+  readable.on('data', (chunk) => {
+    Songs.collection.insertMany(JSON.parse(chunk.toString()), (err) => {
+      if (err) {
+        console.log('error inserting documents in to songs collection: ', err);
+      } else {
+        mongoose.disconnect(() => {
+          // console.log('disconnected!');
+        });
+        mongoCounter += 1;
+      }
+      number += 1;
+      console.log(number);
+      if (number === 100) {
+        round += 1;
+        readable = new stream.Readable();
+        dataSeeder();
+      }
+      if (mongoCounter === 200) {
+        console.timeEnd('streamTime');
+      }
+    });
   });
 
-  if (i % 100 === 0) {
-    // console.log('100 boi');
-    readable.push(`${songs}`);
-    songs = [];
-  }
-  if (i % 1000000 === 0) {
-    console.log('--------------');
-  }
-  if (i === 10000000) {
-    readable.push(null);
-  }
-}
-// Songs.collection.insertMany(songs, (err) => {
-//   if (err) {
-//     console.log('error inserting documents in to songs collection');
-//   } else {
-//     // console.log('multiple documents inserted to songs collection');
-//     // console.log('Time for Songs seeding');
-//     // console.timeEnd('seedingSongs');
-//     mongoose.disconnect(() => {
-//       // console.log('disconnected!');
-//       // number += 1;
-//       // songs = [];
-//       dataPoints = [];
-//     });
-//   }
-// if (number === 50) {
-//   console.timeEnd('streamTime');
-// }
-//  });
-// }
+  // } else if (round === 2) {
+  //   readable2.on('data', (chunk) => {
+  //     number += 1;
+  //     console.log(number);
+  //   });
+  // }
+};
+console.time('streamTime');
+dataSeeder();
 
 // return JSON.stringify(arr);
 // }
 
-// const readableStream = new Readable({
-//   read(1000) {
-//     this.push(test());
-//     if (count === 3) this.push(null);
-//     count++;
-//   },
+// piping
+// readable.pipe(JSONStream.parse('*')).pipe(writableStream);
+// readable.on('end', () => {
+//   console.log('done');
+//   console.timeEnd('streamTime');
+//   mongoose.disconnect();
 // });
-
-// // piping
-// readableStream.pipe(process.stdout);
 
 // through the data event
 
@@ -97,30 +150,31 @@ for (let i = 1; i <= 10000000; i += 1) {
 // });
 
 // WORKING METHOD UNCOMMENT
-let number = 0;
-readable.on('data', (chunk) => {
-  number += 1;
-  // Songs.collection.insertMany(JSON.parse(chunk.toString()), (err) => {
-  //   if (err) {
-  //     console.log('error inserting documents in to songs collection');
-  //   } else {
-  //     // console.log('multiple documents inserted to songs collection');
-  //     // console.log('Time for Songs seeding');
-  //     // console.timeEnd('seedingSongs');
-  //     mongoose.disconnect(() => {
-  //       // console.log('disconnected!');
-  //       number += 1;
-  //     });
-  //   }
-  //   if (number === 50) {
-  //     console.timeEnd('streamTime');
-  //   }
-  // });
-});
-readable.on('end', () => {
-  console.log(number);
-  console.timeEnd('streamTime');
-});
+// let number = 0;
+// readable.on('data', (chunk) => {
+//   number += 1;
+//   Songs.collection.insertMany(JSON.parse(chunk.toString()), (err) => {
+//     if (err) {
+//       console.log('error inserting documents in to songs collection');
+//     } else {
+//       // console.log('multiple documents inserted to songs collection');
+//       // console.log('Time for Songs seeding');
+//       // console.timeEnd('seedingSongs');
+//       mongoose.disconnect(() => {
+//         // console.log('disconnected!');
+//         number += 1;
+//       });
+//     }
+//     if (number === 100) {
+//       console.log(number);
+//       console.timeEnd('streamTime');
+//     }
+//   });
+// });
+// readable.on('end', () => {
+//   console.log(number);
+//   console.timeEnd('streamTime');
+// });
 
 // mongoose.connection.once('open', () => {
 //   console.log('mongoose is now Seeding!!!');
