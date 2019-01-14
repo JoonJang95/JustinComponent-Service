@@ -105,7 +105,7 @@ const dataSeeder = () => {
         mongoCounter += 1;
       }
       number += 1;
-      console.log(number);
+      // console.log(number);
       // Num limit has to be 100 less than seed target. Ex - (400 => 5 million data points)
       if (number % 100 === 0 && number <= 900) {
         round += 1;
