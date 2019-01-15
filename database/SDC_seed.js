@@ -87,12 +87,12 @@ const dataSeeder = () => {
       // Num limit has to be 100 less than seed target. Ex - (400 => 5 million data points)
       // Has to be above a million
       // Ex - desired 2M so 2,000,000 / 10,000 = 200 - 100 = 100 as input to get 2M.
-      if (number % 100 === 0 && number <= 100) {
+      if (number % 100 === 0 && number <= 900) {
         round += 1;
         readable = new stream.Readable();
         dataSeeder();
       }
-      if (mongoCounter === 200) {
+      if (mongoCounter === 1000) {
         console.timeEnd('streamTime');
       }
     });

@@ -6,7 +6,8 @@
   "scripts": {
     "seed": "mysql -u root < schema.sql | node database/helpers.jsx",
     "sdcSeed": "node database/SDC_seed.js",
-    "sdc2Seed": "node database/SDC2_seed.js",
+    "sdc2config": "psql postgres -U adminjoon < ./schemaPG.sql",
+    "sdc2seed": "node database/SDC2_seed.js",
     "build": "webpack -d --watch",
     "start": "nodemon server/SDC_server.js"
   },
@@ -21,7 +22,6 @@
   },
   "homepage": "https://github.com/DemocritusCloud/JustinComponent-Service#readme",
   "dependencies": {
-    "JSONStream": "^1.3.5",
     "axios": "^0.18.0",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
@@ -33,10 +33,10 @@
     "mysql": "^2.16.0",
     "nodemon": "^1.18.9",
     "path": "^0.12.7",
-    "pg-promise": "^8.5.4",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "request": "^2.88.0",
+    "sequelize": "^4.42.0",
     "stream-to-mongo-db": "^1.6.0",
     "webpack": "^4.28.0"
   },
