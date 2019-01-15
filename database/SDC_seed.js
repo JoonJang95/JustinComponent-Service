@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 let readable = new stream.Readable(); // new empty stream.Readable
 
-const { Playlists, Albums, Songs } = require('./SDC_database.js');
+const { Songs } = require('./SDC_database.js');
 
 const audiofile = [
   'https://s3.amazonaws.com/audiosdc/Audio+Files/bensound-buddy.mp3',
@@ -24,6 +24,7 @@ let mongoCounter = 0;
 const dataSeeder = () => {
   console.log('for loop starting');
   console.log('round', round);
+
   for (let i = 1; i <= 1000000; i += 1) {
     song.push({
       title: faker.lorem.words(),
@@ -82,14 +83,16 @@ const dataSeeder = () => {
         mongoCounter += 1;
       }
       number += 1;
-      // console.log(number);
+      console.log(number);
       // Num limit has to be 100 less than seed target. Ex - (400 => 5 million data points)
-      if (number % 100 === 0 && number <= 900) {
+      // Has to be above a million
+      // Ex - desired 2M so 2,000,000 / 10,000 = 200 - 100 = 100 as input to get 2M.
+      if (number % 100 === 0 && number <= 100) {
         round += 1;
         readable = new stream.Readable();
         dataSeeder();
       }
-      if (mongoCounter === 1000) {
+      if (mongoCounter === 200) {
         console.timeEnd('streamTime');
       }
     });

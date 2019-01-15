@@ -6,6 +6,7 @@
   "scripts": {
     "seed": "mysql -u root < schema.sql | node database/helpers.jsx",
     "sdcSeed": "node database/SDC_seed.js",
+    "sdc2Seed": "node database/SDC2_seed.js",
     "build": "webpack -d --watch",
     "start": "nodemon server/SDC_server.js"
   },
@@ -32,6 +33,7 @@
     "mysql": "^2.16.0",
     "nodemon": "^1.18.9",
     "path": "^0.12.7",
+    "pg-promise": "^8.5.4",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "request": "^2.88.0",
