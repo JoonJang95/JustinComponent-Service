@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const explain = require('mongoose-explain');
 const Promise = require('bluebird');
 
 Promise.promisifyAll(mongoose);
@@ -20,52 +21,25 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 // define Schema
 
-const playListsSchema = new mongoose.Schema({
-  // _id: {
-  //   type: Number,
-  //   required: [true, '_id field is required'],
-  // },
-  title: String,
-  owner: String,
-  description: String,
-  imageURL: String,
-  likes: Number,
-  shares: Number,
-});
-
-const albumsSchema = new mongoose.Schema({
-  // _id: {
-  //   type: Number,
-  //   required: [true, '_id field is required'],
-  // },
-  name: String,
-  artist: String,
-  year: String,
-  imageURL: String,
-});
-
 const songsSchema = new mongoose.Schema({
-  // _id: {
-  //   type: Number,
-  //   index: true,
-  //   required: [true, '_id field is required'],
-  // },
-  title: String,
+  _id: {
+    type: Number,
+    index: true,
+    // required: [true, '_id field is required'],
+  },
+  track: String,
   genre: {
     type: String,
     // index: true,
     // required: [true, '_id field is required'],
   },
-  playList: [Number],
   artist: {
     type: String,
     // index: true,
     // required: [true, '_id field is required'],
   },
-  albumID: Number,
-  released: Date,
-  duration: Number,
-  image: String,
+  album: String,
+  albumArt: String,
   songURL: String,
   plays: Number,
   likes: Number,
@@ -73,14 +47,12 @@ const songsSchema = new mongoose.Schema({
   comments: Number,
 });
 
-const Playlists = mongoose.model('PlayLists', playListsSchema);
-const Albums = mongoose.model('Albums', albumsSchema);
+songsSchema.plugin(explain);
+
 const Songs = mongoose.model('Songs', songsSchema);
 
 // Export Models
 
-module.exports.Playlists = Playlists;
-module.exports.Albums = Albums;
 module.exports.Songs = Songs;
 
 // [Math.floor(Math.random() * 5)]

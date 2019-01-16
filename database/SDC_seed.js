@@ -2,6 +2,8 @@ const faker = require('faker');
 const stream = require('stream');
 const mongoose = require('mongoose');
 
+// const promise = require('bluebird');
+
 let readable = new stream.Readable(); // new empty stream.Readable
 
 const { Songs } = require('./SDC_database.js');
@@ -20,21 +22,21 @@ let song = [];
 let round = 1;
 let number = 0;
 let mongoCounter = 0;
+let loopCounter = 0;
 
 const dataSeeder = () => {
   console.log('for loop starting');
   console.log('round', round);
 
   for (let i = 1; i <= 1000000; i += 1) {
+    loopCounter += 1;
     song.push({
-      title: faker.lorem.words(),
+      _id: loopCounter,
+      track: faker.lorem.words(),
       genre: genre[randomNum()],
-      playList: [randomNum(), randomNum(), randomNum()],
-      artist: 'hey',
-      albumID: 1,
-      released: faker.date.past(),
-      duration: faker.random.number(),
-      image: faker.random.image(),
+      artist: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      album: faker.lorem.words(),
+      albumArt: faker.random.image(),
       songURL: audiofile[randomNum()],
       plays: faker.random.number(),
       likes: faker.random.number(),
@@ -98,8 +100,16 @@ const dataSeeder = () => {
     });
   });
 };
-console.time('streamTime');
-dataSeeder();
+// console.time('streamTime');
+// dataSeeder();
+
+// Songs.collection.createIndex({ _id: 1 }, () => {
+//   console.log('indexes created!');
+// });
+
+Songs.find({ _id: 9999999 }, (err, docs) => {
+  console.log(docs);
+});
 
 // mongoose.connection.once('open', () => {
 //   console.log('mongoose is now Seeding!!!');
