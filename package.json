@@ -9,7 +9,7 @@
     "sdc2config": "psql postgres -U adminjoon < ./schemaPG.sql",
     "sdc2seed": "node database/SDC2_seed.js",
     "build": "webpack -d --watch",
-    "start": "nodemon server/SDC_server.js"
+    "start": "nodemon server/index.js"
   },
   "repository": {
     "type": "git",

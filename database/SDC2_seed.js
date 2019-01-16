@@ -28,7 +28,7 @@ const dataSeeder = () => {
       track: faker.lorem.words(),
       genre: genre[randomNum()],
       artist: `${faker.name.firstName()} ${faker.name.lastName()}`,
-      album: faker.random.number(),
+      album: faker.lorem.words(),
       albumArt: faker.random.image(),
       songURL: audiofile[randomNum()],
       plays: faker.random.number(),

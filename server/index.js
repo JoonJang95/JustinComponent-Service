@@ -12,13 +12,15 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(express.static(`${__dirname}/../client/dist`));
-app.use(/(\/\d+)/, express.static('./client/dist/'));
+app.use(/\/\d+/, express.static('./client/dist/'));
 
-app.get('/:id', (req, res) => {
-  const id = req.params.id;
+app.get('/tracks/:id', (req, res) => {
+  const { id } = req.params;
   getTracks((err, data) => {
     if (err) return err;
+    console.log(data);
     const sortedData = sortTracks(data, id);
+    console.log(sortedData);
     res.send(sortedData);
   });
 });
