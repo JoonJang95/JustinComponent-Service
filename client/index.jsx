@@ -23,11 +23,12 @@ class Related extends React.Component {
   }
 
   getRelatedTracks(id) {
-    console.log(id);
     axios
       .get(`/tracks/${id}`)
       .then(res => {
+        console.log(res);
         this.setState({
+          //album basically
           currentTrack: res.data.currTrack,
           relatedTracks: res.data.relTracks,
           playlists: res.data.plists,

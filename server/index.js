@@ -18,9 +18,7 @@ app.get('/tracks/:id', (req, res) => {
   const { id } = req.params;
   getTracks((err, data) => {
     if (err) return err;
-    console.log(data);
     const sortedData = sortTracks(data, id);
-    console.log(sortedData);
     res.send(sortedData);
   });
 });

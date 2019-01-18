@@ -89,4 +89,6 @@ const dataSeeder = () => {
   });
 };
 console.time('streamTime');
-dataSeeder();
+// dataSeeder();
+
+console.log(audiofile[randomNum()]);

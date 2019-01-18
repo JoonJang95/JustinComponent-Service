@@ -15,15 +15,12 @@ db.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
-// Songs Model
+// Songs Model (schema)
 const Songs = db.define(
   'songs',
   {
-    track: Sequelize.STRING,
+    title: Sequelize.STRING,
     genre: Sequelize.STRING,
-    artist: Sequelize.STRING,
-    album: Sequelize.STRING,
-    albumArt: Sequelize.STRING,
     songurl: Sequelize.STRING,
     plays: Sequelize.INTEGER,
     likes: Sequelize.INTEGER,
@@ -32,6 +29,58 @@ const Songs = db.define(
   },
   { timestamps: false },
 );
+
+// PlayList Schema
+
+const PlayLists = db.define(
+  'playlists',
+  {
+    name: Sequelize.STRING,
+    owner: Sequelize.STRING,
+    imageurl: Sequelize.STRING,
+    likes: Sequelize.INTEGER,
+    shares: Sequelize.INTEGER,
+  },
+  { timestamps: false },
+);
+
+// Playlist / Song association Schema
+
+const PlayListIndexes = db.define(
+  'playlistIndexes',
+  {
+    playlistID: Sequelize.INTEGER,
+    songsID: Sequelize.INTEGER,
+  },
+  { timestamps: false },
+);
+
+// Album Schema
+
+const Albums = db.define(
+  'albums',
+  {
+    name: Sequelize.STRING,
+    year: Sequelize.INTEGER,
+    imageurl: Sequelize.STRING,
+    artist: Sequelize.STRING,
+  },
+  { timestamps: false },
+);
+
+// Associations
+
+// Songs to Albums
+Songs.belongsTo(Albums); // will add AlbumID to Songs
+Albums.hasMany(Songs);
+
+// PlayLists to PlaylistIndexes
+PlayListIndexes.belongsTo(PlayLists); // will add playlistID to playlistIndexes
+PlayLists.hasMany(PlayListIndexes);
+
+// Songs to PlayListIndexes
+PlayListIndexes.belongsTo(Songs); // will add songsID to playlistIndexes
+Songs.hasMany(PlayListIndexes);
 
 module.exports = {
   db,

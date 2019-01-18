@@ -39,8 +39,8 @@ const songsSchema = new mongoose.Schema({
     // required: [true, '_id field is required'],
   },
   album: String,
-  albumArt: String,
-  songURL: String,
+  albumart: String,
+  songurl: String,
   plays: Number,
   likes: Number,
   shares: Number,
@@ -50,7 +50,6 @@ const songsSchema = new mongoose.Schema({
 songsSchema.plugin(explain);
 
 const Songs = mongoose.model('Songs', songsSchema);
-
 // Export Models
 
 module.exports.Songs = Songs;

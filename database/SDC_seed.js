@@ -107,7 +107,7 @@ const dataSeeder = () => {
 //   console.log('indexes created!');
 // });
 
-Songs.find({ artist: 'Aisha Cronin' }, (err, docs) => {
+Songs.findOne({ artist: 'Aisha Cronin' }, (err, docs) => {
   console.log(docs);
 });
 
