@@ -1,7 +1,9 @@
 const faker = require('faker');
 const stream = require('stream');
 
-const { db, Songs } = require('./SDC2_database.js');
+const {
+  db, Songs, Albums, PlayLists, PlayListIndexes,
+} = require('./SDC2_database.js');
 
 let readable = new stream.Readable(); // new empty stream.Readable
 
@@ -12,29 +14,135 @@ const audiofile = [
   'https://s3.amazonaws.com/audiosdc/Audio+Files/bensound-sunny.mp3',
   'https://s3.amazonaws.com/audiosdc/Audio+Files/bensound-tenderness.mp3',
 ];
-const genre = ['Hiphop', 'RnB', 'Pop', 'Jazz', 'Classical'];
-const randomNum = () => Math.floor(Math.random() * 5);
+const genre = ['Hiphop', 'RnB', 'Pop', 'Jazz', 'Classical', 'Rap', 'EDM', 'Country', 'Reggae'];
+
+// Randomizer functions
+
+const randomAudio = () => Math.floor(Math.random() * 5);
+const randomGenre = () => Math.floor(Math.random() * 9);
+const randomYear = () => Math.floor(Math.random() * 21) + 2000;
+// **Make sure to change these numbers to match total amount**
+const randomPlayListId = () => Math.floor(Math.random() * 100000) + 1;
+
+// data storage and counter variables
 
 let song = [];
-let round = 1;
-let psqlCounter = 0;
+let album = [];
+let playlist = [];
+let playListIndex = [];
+let psqlAlbumCounter = 0;
+let psqlSongsCounter = 0;
+let psqlPlayListCounter = 0;
+let psqlPlayListIndexCounter = 0;
+let songIdCounter = 0;
 
-const dataSeeder = () => {
-  console.log('for loop starting');
+let round = 1;
+
+const playListIndexDataSeeder = () => {
+  console.log('playListIndex for loop starting');
+  console.log('round', round);
+
+  for (let i = 1; i <= 100000; i += 1) {
+    playListIndex.push({
+      playlistId: randomPlayListId(),
+      songId: (songIdCounter += 1),
+    });
+
+    if (i % 100000 === 0) {
+      const data = JSON.stringify(playListIndex);
+      readable.push(data);
+      playListIndex = [];
+      console.log('going to push null');
+      readable.push(null);
+      console.log('--------------');
+    }
+  }
+
+  readable.on('data', (chunk) => {
+    PlayListIndexes.bulkCreate(JSON.parse(chunk.toString()))
+      .then(() => {
+        console.log('called');
+        psqlPlayListIndexCounter += 1;
+        // console.log(number);
+        if (round < 10) {
+          round += 1;
+          readable = new stream.Readable();
+          playListIndexDataSeeder();
+        }
+        if (psqlPlayListIndexCounter === 10) {
+          console.timeEnd('streamTime');
+          console.log('disconnecting from postgreSQL');
+          db.close();
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        console.log('error with seeding songs table');
+      });
+  });
+};
+
+const playListDataSeeder = () => {
+  console.log('PlayList for loop starting');
+  console.log('round', round);
+
+  for (let i = 1; i <= 100000; i += 1) {
+    playlist.push({
+      description: `${faker.lorem.word()} ${faker.lorem.word()}`,
+      owner: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      imageurl: faker.random.image(),
+      likes: faker.random.number(),
+      shares: faker.random.number(),
+    });
+
+    if (i % 100000 === 0) {
+      const data = JSON.stringify(playlist);
+      readable.push(data);
+      playlist = [];
+      console.log('going to push null');
+      readable.push(null);
+      console.log('--------------');
+    }
+  }
+
+  readable.on('data', (chunk) => {
+    PlayLists.bulkCreate(JSON.parse(chunk.toString()))
+      .then(() => {
+        console.log('called');
+        psqlPlayListCounter += 1;
+        // console.log(number);
+        if (round < 1) {
+          round += 1;
+          readable = new stream.Readable();
+          playListDataSeeder();
+        }
+        if (psqlPlayListCounter === 1) {
+          round = 1;
+          readable = new stream.Readable();
+          playListIndexDataSeeder();
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        console.log('error with seeding songs table');
+      });
+  });
+};
+
+const songsDataSeeder = () => {
+  console.log('Songs for loop starting');
   console.log('round', round);
 
   for (let i = 1; i <= 100000; i += 1) {
     song.push({
-      track: faker.lorem.words(),
-      genre: genre[randomNum()],
-      artist: `${faker.name.firstName()} ${faker.name.lastName()}`,
-      album: faker.lorem.words(),
-      albumArt: faker.random.image(),
-      songURL: audiofile[randomNum()],
+      title: faker.lorem.words(),
+      genre: genre[randomGenre()],
+      songurl: audiofile[randomAudio()],
       plays: faker.random.number(),
       likes: faker.random.number(),
       shares: faker.random.number(),
       comments: faker.random.number(),
+      albumId: i,
     });
 
     if (i % 100000 === 0) {
@@ -47,48 +155,77 @@ const dataSeeder = () => {
     }
   }
 
-  // if (round > 1) {
-  //   mongoose.connect(
-  //     'mongodb://localhost/sdcRelatedSongs',
-  //     { useNewUrlParser: true, useCreateIndex: true, autoIndex: false },
-  //   );
-
-  //   const db = mongoose.connection;
-
-  //   db.once('open', () => {
-  //     console.log('mongoose is now live!!!');
-  //   });
-  //   // if there's a connection error log it
-  //   db.on('error', console.error.bind(console, 'connection error:'));
-  // }
-
   readable.on('data', (chunk) => {
-    if (round === 1) {
-      db.sync({ force: true }).catch(() => {
-        console.log('There was an error syncing');
-      });
-    }
     Songs.bulkCreate(JSON.parse(chunk.toString()))
       .then(() => {
-        psqlCounter += 1;
+        psqlSongsCounter += 1;
         // console.log(number);
-        if (round < 100) {
+        if (round < 10) {
           round += 1;
           readable = new stream.Readable();
-          dataSeeder();
+          songsDataSeeder();
         }
-        if (psqlCounter === 100) {
-          console.timeEnd('streamTime');
-          console.log('disconnecting from postgreSQL');
-          db.close();
+        if (psqlSongsCounter === 10) {
+          round = 1;
+          readable = new stream.Readable();
+          playListDataSeeder();
         }
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
+        console.log('error with seeding songs table');
+      });
+  });
+};
+
+const albumDataSeeder = () => {
+  if (round === 1) {
+    db.sync({ force: true }).catch(() => {
+      console.log('There was an error syncing');
+    });
+  }
+  console.log("album's for loop starting");
+  console.log('round', round);
+
+  for (let i = 1; i <= 100000; i += 1) {
+    album.push({
+      name: faker.lorem.words(),
+      year: randomYear(),
+      imageurl: faker.random.image(),
+      artist: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    });
+
+    if (i % 100000 === 0) {
+      const data = JSON.stringify(album);
+      readable.push(data);
+      album = [];
+      console.log('going to push null');
+      readable.push(null);
+      console.log('--------------');
+    }
+  }
+
+  readable.on('data', (chunk) => {
+    Albums.bulkCreate(JSON.parse(chunk.toString()))
+      .then(() => {
+        psqlAlbumCounter += 1;
+        // console.log(number);
+        if (round < 1) {
+          round += 1;
+          readable = new stream.Readable();
+          albumDataSeeder();
+        }
+        if (psqlAlbumCounter === 1) {
+          readable = new stream.Readable();
+          round = 1;
+          songsDataSeeder();
+        }
+      })
+      .catch((e) => {
+        console.log(e);
         console.log('error with seeding songs table');
       });
   });
 };
 console.time('streamTime');
-// dataSeeder();
-
-console.log(audiofile[randomNum()]);
+albumDataSeeder();

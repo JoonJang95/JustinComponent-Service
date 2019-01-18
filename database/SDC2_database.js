@@ -35,7 +35,7 @@ const Songs = db.define(
 const PlayLists = db.define(
   'playlists',
   {
-    name: Sequelize.STRING,
+    description: Sequelize.STRING,
     owner: Sequelize.STRING,
     imageurl: Sequelize.STRING,
     likes: Sequelize.INTEGER,
@@ -46,14 +46,7 @@ const PlayLists = db.define(
 
 // Playlist / Song association Schema
 
-const PlayListIndexes = db.define(
-  'playlistIndexes',
-  {
-    playlistID: Sequelize.INTEGER,
-    songsID: Sequelize.INTEGER,
-  },
-  { timestamps: false },
-);
+const PlayListIndexes = db.define('playlistIndexes', {}, { timestamps: false });
 
 // Album Schema
 
@@ -76,13 +69,22 @@ Albums.hasMany(Songs);
 
 // PlayLists to PlaylistIndexes
 PlayListIndexes.belongsTo(PlayLists); // will add playlistID to playlistIndexes
-PlayLists.hasMany(PlayListIndexes);
 
 // Songs to PlayListIndexes
 PlayListIndexes.belongsTo(Songs); // will add songsID to playlistIndexes
-Songs.hasMany(PlayListIndexes);
+
+const queryInterface = db.getQueryInterface();
+
+// Add composite UNIQUE constraint
+queryInterface.addConstraint('playlistIndexes', ['playlistId', 'songId'], {
+  type: 'unique',
+  name: 'uniquePairs',
+});
 
 module.exports = {
   db,
   Songs,
+  Albums,
+  PlayLists,
+  PlayListIndexes,
 };
