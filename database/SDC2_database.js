@@ -5,6 +5,7 @@ const db = new Sequelize('relatedtracks', 'adminjoon', 'password', {
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,
+  query: { raw: true },
 });
 
 db.authenticate()
@@ -19,6 +20,12 @@ db.authenticate()
 const Songs = db.define(
   'songs',
   {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
     title: Sequelize.STRING,
     genre: Sequelize.STRING,
     songurl: Sequelize.STRING,
@@ -35,6 +42,12 @@ const Songs = db.define(
 const PlayLists = db.define(
   'playlists',
   {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
     description: Sequelize.STRING,
     owner: Sequelize.STRING,
     imageurl: Sequelize.STRING,
@@ -46,13 +59,32 @@ const PlayLists = db.define(
 
 // Playlist / Song association Schema
 
-const PlayListIndexes = db.define('playlistIndexes', {}, { timestamps: false });
+const PlayListIndexes = db.define(
+  'playlistindexes',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    playlistId: Sequelize.INTEGER,
+    songId: Sequelize.INTEGER,
+  },
+  { timestamps: false },
+);
 
 // Album Schema
 
 const Albums = db.define(
   'albums',
   {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
     name: Sequelize.STRING,
     year: Sequelize.INTEGER,
     imageurl: Sequelize.STRING,
@@ -69,17 +101,19 @@ Albums.hasMany(Songs);
 
 // PlayLists to PlaylistIndexes
 PlayListIndexes.belongsTo(PlayLists); // will add playlistID to playlistIndexes
+PlayLists.hasMany(PlayListIndexes);
 
 // Songs to PlayListIndexes
 PlayListIndexes.belongsTo(Songs); // will add songsID to playlistIndexes
+Songs.hasMany(PlayListIndexes);
 
-const queryInterface = db.getQueryInterface();
+// const queryInterface = db.getQueryInterface();
 
 // Add composite UNIQUE constraint
-queryInterface.addConstraint('playlistIndexes', ['playlistId', 'songId'], {
-  type: 'unique',
-  name: 'uniquePairs',
-});
+// queryInterface.addConstraint('playlistindexes', ['playlistId', 'songId'], {
+//   type: 'unique',
+//   name: 'uniquePairs',
+// });
 
 module.exports = {
   db,
