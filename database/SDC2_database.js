@@ -5,7 +5,6 @@ const db = new Sequelize('relatedtracks', 'adminjoon', 'password', {
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,
-  query: { raw: true },
 });
 
 db.authenticate()
