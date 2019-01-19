@@ -6,7 +6,7 @@ const dbInterface = db.getQueryInterface();
 
 dbInterface.addIndex('albums', ['id']);
 dbInterface.addIndex('playlistindexes', ['songId', 'playlistId']);
-dbInterface.addIndex('songs', ['id', 'genre']);
+dbInterface.addIndex('songs', ['id', 'genre', 'albumId']);
 dbInterface.addIndex('playlists', ['id']);
 
 // Add Foreign Keys to PlaylistIndexes
