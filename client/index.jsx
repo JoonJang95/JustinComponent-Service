@@ -7,9 +7,10 @@ class Related extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTrack: null,
-      relatedTracks: null,
-      id: 1,
+      album: '',
+      relatedTracks: '',
+      playlists: '',
+      id: '',
     };
   }
   componentDidMount() {
@@ -23,17 +24,17 @@ class Related extends React.Component {
   }
 
   getRelatedTracks(id) {
+    console.log('called!');
     axios
       .get(`/tracks/${id}`)
       .then(res => {
         console.log(res);
         this.setState({
-          //album basically
-          currentTrack: res.data.currTrack,
-          relatedTracks: res.data.relTracks,
-          playlists: res.data.plists,
+          album: res.data.album,
+          relatedTracks: res.data.relatedTracks,
+          playlists: res.data.playlists,
         });
-        console.log(this.state.currentTrack);
+        console.log(this.state);
       })
       .catch(err => console.log('get err: ', err));
   }
@@ -53,8 +54,8 @@ class Related extends React.Component {
           }}
         >
           <Sources
-            currentTrack={this.state.currentTrack}
-            plists={this.state.playlists}
+            album={this.state.album}
+            playlists={this.state.playlists}
             relatedTracks={this.state.relatedTracks}
           />
         </div>

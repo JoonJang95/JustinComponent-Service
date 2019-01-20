@@ -39,8 +39,6 @@ exports.getRelatedInfo = (req, res) => {
         console.log("Error with find current Song's album query: ", err);
         res.sendStatus(404).send(err);
       });
-    console.log('------------');
-    console.log(RelatedInfo, '1st');
 
     // Get related Tracks
     //* *Note: Can use raw SQL query to run self inner join to make this into one query...
@@ -49,17 +47,23 @@ exports.getRelatedInfo = (req, res) => {
       .then(async ({ dataValues }) => {
         // Gen random num to 9,999,000
         // Range is between 1000 numbers
-        const randomBaseNum = (() => Math.floor(Math.random() * 9999000) + 1)();
+        const randomBaseNum = (() => Math.floor(Math.random() * 9999900) + 1)();
         await Songs.findAll({
           where: {
             genre: `${dataValues.genre}`,
             id: {
               [db.Op.and]: {
                 [db.Op.gt]: randomBaseNum,
-                [db.Op.lt]: randomBaseNum + 1000,
+                [db.Op.lt]: randomBaseNum + 100,
               },
             },
           },
+          include: [
+            {
+              model: Albums,
+              required: true,
+            },
+          ],
           order: db.literal('random()'),
           limit: 3,
         })
@@ -78,8 +82,6 @@ exports.getRelatedInfo = (req, res) => {
         console.log("Error with find current Song's genre query: ", err);
         res.sendStatus(404).send(err);
       });
-    console.log('------------');
-    console.log(RelatedInfo, '2nd');
 
     // Get related Playlists
     await PlayLists.findAll({
@@ -101,13 +103,11 @@ exports.getRelatedInfo = (req, res) => {
         console.log('Error with find related playlists query: ', err);
         res.sendStatus(404).send(err);
       });
-    console.log('------------');
-    console.log(RelatedInfo, '3rd');
 
     if (queryCheck === 3) {
       res.status(200).json(RelatedInfo);
     } else {
-      res.sendStatus(404);
+      res.sendStatus(404).send('error with one of the queries');
     }
   })();
 };
