@@ -108,6 +108,7 @@ exports.getRelatedInfo = (req, res) => {
         console.log('Error with find related playlists query: ', err);
         res.sendStatus(404).send(err);
       });
+
     // If all 3 queries ran, then send a response to client
     if (queryCheck === 3) {
       console.timeEnd('totalQuery');
