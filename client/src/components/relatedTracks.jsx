@@ -7,6 +7,7 @@ class RelatedTracks extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <div style={{ margin: 5, width: 300 }}>
         <div
@@ -33,35 +34,39 @@ class RelatedTracks extends React.Component {
         </div>
 
         <ul style={{ listStyle: 'none', margin: 0, padding: 0, paddingTop: 5 }}>
-          {this.props.relatedTracks.map(track => {
-            let background = track.albumArt;
-            return (
-              <li>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span style={{ flex: 1 }}>
-                    <div
-                      style={{
-                        backgroundImage: `url(${background})`,
-                        width: 50,
-                        height: 50,
-                        opacity: 1,
-                      }}
-                    />
-                  </span>
+          {this.props.relatedTracks
+            ? this.props.relatedTracks.map(track => {
+                let background = track.album.imageurl;
+                return (
+                  <li>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                      <span style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            backgroundImage: `url(${background})`,
+                            width: 50,
+                            height: 50,
+                            opacity: 1,
+                          }}
+                        />
+                      </span>
 
-                  <div style={{ flex: 3 }}>
-                    <div style={{ color: 'gray' }}>{track.artist}</div>
-                    <div>{track.track}</div>
-                    <SoundStats stats={[track.plays, track.likes, track.shares, track.comments]} />
-                  </div>
-                </div>
-              </li>
-            );
-          })}
+                      <div style={{ flex: 3 }}>
+                        <div style={{ color: 'gray' }}>{track.album.artist}</div>
+                        <div>{track.title}</div>
+                        <SoundStats
+                          stats={[track.plays, track.likes, track.shares, track.comments]}
+                        />
+                      </div>
+                    </div>
+                  </li>
+                );
+              })
+            : ''}
         </ul>
       </div>
     );
   }
 }
 
-// export default RelatedTracks;
+export default RelatedTracks;

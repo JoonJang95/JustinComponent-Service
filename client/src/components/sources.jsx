@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import RelatedTracks from './relatedTracks.jsx';
+import RelatedTracks from './relatedTracks.jsx';
 import InPlaylists from './inPlaylists.jsx';
 import InAlbums from './inAlbums.jsx';
 

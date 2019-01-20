@@ -44,7 +44,6 @@ const PlayLists = db.define(
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
       allowNull: false,
     },
     description: Sequelize.STRING,
