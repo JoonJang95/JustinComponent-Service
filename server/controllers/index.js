@@ -12,7 +12,6 @@ const {
 // but in order to match the front-end, placing them into one route
 
 exports.getRelatedInfo = (req, res) => {
-  console.time('totalQuery');
   const { id } = req.params;
   const RelatedInfo = {
     relatedTracks: [],
@@ -28,10 +27,7 @@ exports.getRelatedInfo = (req, res) => {
     await Songs.findOne({ attributes: ['genre', 'albumId'], where: { id } })
       .then(async ({ dataValues }) => {
         // Get related Album
-        await Albums.findOne({
-          where: { id: dataValues.albumId },
-          attributes: ['name', 'year', 'imageurl', 'artist'],
-        })
+        await Albums.findByPk(dataValues.albumId)
           .then((results) => {
             queryCheck += 1;
             RelatedInfo.album = results.dataValues;
@@ -49,7 +45,7 @@ exports.getRelatedInfo = (req, res) => {
             id: {
               [db.Op.and]: {
                 [db.Op.gt]: randomBaseNum,
-                [db.Op.lt]: randomBaseNum + 100,
+                [db.Op.lt]: randomBaseNum + 50,
               },
             },
           },
@@ -111,7 +107,6 @@ exports.getRelatedInfo = (req, res) => {
 
     // If all 3 queries ran, then send a response to client
     if (queryCheck === 3) {
-      console.timeEnd('totalQuery');
       res.status(200).json(RelatedInfo);
     } else {
       res.sendStatus(404).send('error with one of the queries');

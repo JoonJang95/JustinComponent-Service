@@ -1,10 +1,14 @@
-const newrelic = require('newrelic');
+require('newrelic');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const os = require('os');
+const cluster = require('cluster');
 const controller = require('./controllers/index.js');
 
 const app = express();
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
@@ -23,6 +27,23 @@ app.delete('/deletePlayList', controller.deletePlaylist);
 
 const port = 9000; // Change Me for Proxy!!
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+if (cluster.isMaster) {
+  console.log(`Master ${process.pid} is running on port: ${port}`);
+  // Count the machine's CPUs
+  const cpuCount = os.cpus().length;
+
+  // Create a worker for each CPU
+  for (let i = 0; i < cpuCount; i += 1) {
+    cluster.fork();
+  }
+
+  // Listen for dying workers
+  cluster.on('exit', (worker) => {
+    console.log(`worker ${worker.process.pid} died`);
+    cluster.fork();
+  });
+} else {
+  app.listen(port, () => {
+    console.log(`Worker ${process.pid} started`);
+  });
+}

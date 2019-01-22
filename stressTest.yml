@@ -1,12 +1,12 @@
 config:
-  target: 'https://artillery.io'
+  target: 'http://localhost:9000'
   phases:
     - duration: 60
-      arrivalRate: 20
+      arrivalRate: 100
   defaults:
     headers:
       x-my-service-auth: '987401838271002188298567'
 scenarios:
   - flow:
       - get:
-          url: '/docs'
+          url: '/tracks/9999838'

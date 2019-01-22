@@ -1,4 +1,4 @@
-const { db } = require('./SDC2_database.js');
+const { db } = require('../SDC2_database.js');
 
 // Create indexes
 
