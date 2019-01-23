@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize');
 
 const db = new Sequelize('relatedtracks', 'adminjoon', 'password', {
-  host: 'localhost',
+  host: 'host.docker.internal',
+  port: '5432',
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,
