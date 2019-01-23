@@ -3,3 +3,5 @@ client/dist/bundle.js
 database/data
 newrelic.js
 newrelic_agent.log
+Docker/DockerFile
+Docker/docker-compose.yml

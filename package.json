@@ -4,12 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "seed": "mysql -u root < schema.sql | node database/helpers.jsx",
     "sdcSeedMongo": "node database/SDC_seed.js",
     "sdc2makedb": "psql postgres -U adminjoon < ./schemaPG.sql",
-    "sdc2seed": "node database/SDC2_seed.js",
+    "sdc2csvGen": "node database/SDC2_csvGen.js",
     "sdc2postSeed": "node database/seedCSV/postSeedConfig.js",
-    "build": "webpack -d --watch",
+    "build": "webpack",
     "start": "nodemon server/SDC_server.js"
   },
   "repository": {

@@ -5,11 +5,11 @@ const csv = require('fast-csv');
 
 // const stream = require('stream');
 
-const {
-  db, Songs, Albums, PlayLists, PlayListIndexes,
-} = require('./SDC2_database.js');
+// const {
+//   db, Songs, Albums, PlayLists, PlayListIndexes,
+// } = require('./SDC2_database.js');
 
-db.sync({ force: true });
+// db.sync({ force: true });
 
 // const readable = new stream.Readable(); // new empty stream.Readable
 
@@ -155,7 +155,7 @@ function genAlbumsCSV() {
   });
 }
 console.time('csvGen');
-// genAlbumsCSV();
+genAlbumsCSV();
 
 // Stream seeding
 
