@@ -1,8 +1,9 @@
 const Sequelize = require('sequelize');
+const { dbPORT, dbURL } = require('../envConfigs.js');
 
 const db = new Sequelize('relatedtracks', 'adminjoon', 'password', {
-  host: 'host.docker.internal',
-  port: '5432',
+  host: dbURL,
+  port: dbPORT,
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,

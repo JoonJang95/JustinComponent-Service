@@ -5,7 +5,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const os = require('os');
 const cluster = require('cluster');
+
 const controller = require('./controllers/index.js');
+const { nodePORT } = require('../envConfigs.js');
 
 const app = express();
 
@@ -25,7 +27,7 @@ app.put('/updatePlayListDescription', controller.updatePlaylistDescription);
 
 app.delete('/deletePlayList', controller.deletePlaylist);
 
-const port = 9000; // Change Me for Proxy!!
+const port = nodePORT; // Change Me for Proxy!!
 
 if (cluster.isMaster) {
   console.log(`Master ${process.pid} is running on port: ${port}`);
