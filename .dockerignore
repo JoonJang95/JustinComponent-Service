@@ -3,4 +3,3 @@ node_modules
 npm-debug.log
 client/dist/bundle.js
 database/data
-newrelic_agent.log

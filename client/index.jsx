@@ -27,7 +27,7 @@ class Related extends React.Component {
   getRelatedTracks(id) {
     console.log('called!');
     axios
-      .get(`http://${nodeURL}/tracks/${id}`)
+      .get(`/tracks/${id}`)
       .then(res => {
         console.log(res);
         this.setState({

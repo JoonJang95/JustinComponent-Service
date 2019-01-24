@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize');
-const { dbPORT, dbURL } = require('../envConfigs.js');
+const { dbURL } = require('../envConfigs.js');
+
+console.log(dbURL);
 
 const db = new Sequelize('relatedtracks', 'adminjoon', 'password', {
   host: dbURL,
-  port: dbPORT,
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,
@@ -114,6 +115,8 @@ Songs.hasMany(PlayListIndexes);
 //   type: 'unique',
 //   name: 'uniquePairs',
 // });
+
+db.sync();
 
 module.exports = {
   db,

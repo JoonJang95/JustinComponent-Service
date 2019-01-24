@@ -1,7 +1,8 @@
-var path = require('path');
-var dir_in = path.join(__dirname, '/client');
-var dir_out = path.join(__dirname, '/client/dist');
+const path = require('path');
 
+const dir_in = path.join(__dirname, '/client');
+const dir_out = path.join(__dirname, '/client/dist');
+const Dotenv = require('dotenv-webpack');
 
 // fix webpacl config in morning
 
@@ -9,7 +10,7 @@ module.exports = {
   entry: `${dir_in}/index.jsx`,
   output: {
     filename: 'bundle.js',
-    path: dir_out
+    path: dir_out,
   },
   module: {
     rules: [
@@ -18,9 +19,13 @@ module.exports = {
         include: dir_in,
         loader: 'babel-loader',
         query: {
-          presets: ['react']
-        }
-      }
-    ]
-  }
+          presets: ['react'],
+        },
+      },
+    ],
+  },
+  plugins: [new Dotenv()],
+  node: {
+    fs: 'empty',
+  },
 };
