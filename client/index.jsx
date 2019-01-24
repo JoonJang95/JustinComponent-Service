@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { nodeURL } from '../envConfigs';
 import Sources from './src/components/sources.jsx';
 import axios from 'axios';
 
@@ -26,7 +27,7 @@ class Related extends React.Component {
   getRelatedTracks(id) {
     console.log('called!');
     axios
-      .get(`http://localhost:9000/tracks/${id}`)
+      .get(`http://${nodeURL}/tracks/${id}`)
       .then(res => {
         console.log(res);
         this.setState({
