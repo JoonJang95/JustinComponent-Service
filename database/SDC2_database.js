@@ -3,7 +3,7 @@ const { dbURL, dbPassword } = require('../envConfigs.js');
 
 console.log(dbURL);
 
-const db = new Sequelize('relatedtracks', 'adminjoon', 'dbPassword', {
+const db = new Sequelize('relatedtracks', 'adminjoon', dbPassword, {
   host: dbURL,
   dialect: 'postgres',
   operatorsAliases: false,
