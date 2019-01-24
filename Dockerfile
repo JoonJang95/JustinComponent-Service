@@ -10,6 +10,5 @@ RUN npm run build
 # && npm run sdc2csvGen
 
 EXPOSE 9000
-# EXPOSE 5432
 
 CMD ["npm", "start"]
