@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize');
-const { dbURL } = require('../envConfigs.js');
+const { dbURL, dbPassword } = require('../envConfigs.js');
 
 console.log(dbURL);
 
-const db = new Sequelize('relatedtracks', 'adminjoon', 'password', {
+const db = new Sequelize('relatedtracks', 'adminjoon', 'dbPassword', {
   host: dbURL,
   dialect: 'postgres',
   operatorsAliases: false,
@@ -99,14 +99,6 @@ const Albums = db.define(
 // Songs to Albums
 Songs.belongsTo(Albums); // will add AlbumID to Songs
 Albums.hasMany(Songs);
-
-// PlayLists to PlaylistIndexes
-PlayListIndexes.belongsTo(PlayLists); // will add playlistID to playlistIndexes
-PlayLists.hasMany(PlayListIndexes);
-
-// Songs to PlayListIndexes
-PlayListIndexes.belongsTo(Songs); // will add songsID to playlistIndexes
-Songs.hasMany(PlayListIndexes);
 
 // const queryInterface = db.getQueryInterface();
 

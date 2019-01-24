@@ -7,4 +7,5 @@ module.exports = {
   nodePORT: process.env.nodePORT,
   dbPORT: process.env.dbPORT,
   nodeURL: process.env.node_URL,
+  dbdbPassword: process.env.dbPassword,
 };

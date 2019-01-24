@@ -15,7 +15,6 @@ class Related extends React.Component {
     };
   }
   componentDidMount() {
-    console.log('component mounted');
     var songId;
     var id = window.location.pathname.slice(1, window.location.pathname.length - 1);
 
@@ -25,7 +24,6 @@ class Related extends React.Component {
   }
 
   getRelatedTracks(id) {
-    console.log('called!');
     axios
       .get(`/tracks/${id}`)
       .then(res => {
@@ -35,7 +33,6 @@ class Related extends React.Component {
           relatedTracks: res.data.relatedTracks,
           playlists: res.data.playlists,
         });
-        console.log(this.state);
       })
       .catch(err => console.log('get err: ', err));
   }
