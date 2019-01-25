@@ -98,15 +98,14 @@ const Albums = db.define(
 Songs.belongsTo(Albums); // will add AlbumID to Songs
 Albums.hasMany(Songs);
 
-// const queryInterface = db.getQueryInterface();
+// Add more associations
+// PlayLists to PlaylistIndexes
+PlayListIndexes.belongsTo(PlayLists); // will add playlistID to playlistIndexes
+PlayLists.hasMany(PlayListIndexes);
 
-// Add composite UNIQUE constraint
-// queryInterface.addConstraint('playlistindexes', ['playlistId', 'songId'], {
-//   type: 'unique',
-//   name: 'uniquePairs',
-// });
-
-db.sync();
+// Songs to PlayListIndexes
+PlayListIndexes.belongsTo(Songs); // will add songsID to playlistIndexes
+Songs.hasMany(PlayListIndexes);
 
 module.exports = {
   db,
