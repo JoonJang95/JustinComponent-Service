@@ -16,7 +16,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(/(\/\d+)|\//, express.static('./client/dist/'));
+app.use(express.static('./client/dist/'));
+app.use(/(\/\d+)/, express.static('./client/dist/'));
 
 // API Request Handlers
 app.get('/tracks/:id', controller.getRelatedInfo);
