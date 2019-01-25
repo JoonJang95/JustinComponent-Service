@@ -7,7 +7,6 @@ class RelatedTracks extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div style={{ margin: 5, width: 300 }}>
         <div

@@ -4,8 +4,6 @@ import { nodeURL, nodePORT } from '../envConfigs';
 import Sources from './src/components/sources.jsx';
 import axios from 'axios';
 
-console.log(nodeURL);
-
 class Related extends React.Component {
   constructor(props) {
     super(props);
