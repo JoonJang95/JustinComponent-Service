@@ -2,6 +2,7 @@
 
 A music streaming platform for users to enjoy their favorite songs
 
+## Quick Note
 I took on a legacy codebase for a music streaming application that originally held 1000 datasets and scaled the backend to host 42 million datasets. I also containerized the application using Docker to standardize the environment and deployed to Amazon’s EC2 t2.micro instances while maintaining fast response times and performance.
 
 ## Related Projects
