@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { nodeURL, nodePORT } from '../envConfigs';
 import Sources from './src/components/sources.jsx';
 import axios from 'axios';
 
@@ -25,7 +24,7 @@ class Related extends React.Component {
 
   getRelatedTracks(id) {
     axios
-      .get(`http://${nodeURL}:${nodePORT}/tracks/${id}`)
+      .get(`http://35.172.119.77:9000/tracks/${id}`)
       .then(res => {
         this.setState({
           album: res.data.album,
